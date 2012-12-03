@@ -20,8 +20,8 @@ link_directories(${Boost_LIBRARY_DIRS})
 
 add_subdirectory(examples)
 
-add_library(cppqc STATIC src/Arbitrary.cpp)
+#add_library(cppqc STATIC src/Arbitrary.cpp)
 
 install(DIRECTORY "include/" DESTINATION "include"
     PATTERN ".*" EXCLUDE)
-install(TARGETS cppqc DESTINATION "lib")
+#install(TARGETS cppqc DESTINATION "lib")
