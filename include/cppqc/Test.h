@@ -87,7 +87,7 @@ namespace detail {
             const std::multimap<std::size_t, std::string> &labels)
     {
         std::size_t cnt = 20;
-        for (std::map<std::size_t, std::string>::const_reverse_iterator
+        for (std::multimap<std::size_t, std::string>::const_reverse_iterator
                 it = labels.rbegin(); it != labels.rend(); --cnt, ++it) {
             if (cnt == 0) {
                 out << "  ..." << std::endl;
@@ -146,7 +146,7 @@ Result quickCheckOutput(const Property<T0, T1, T2, T3, T4> &prop,
 
     std::map<std::string, std::size_t> labelsCollected;
     std::size_t numSuccess = 0, numDiscarded = 0, numTrivial = 0;
-    RngEngine rng(time(0));
+    RngEngine rng(static_cast<unsigned int>(std::time(0)));
     while (numSuccess < maxSuccess) {
         try {
             std::size_t size = (numSuccess * maxSize + numDiscarded) / maxSuccess;
