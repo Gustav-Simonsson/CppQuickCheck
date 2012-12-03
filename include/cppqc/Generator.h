@@ -310,7 +310,7 @@ void sampleOutput(const Generator<T> &g,
     if (num == 0)
         num = 20;
     if (seed == 0)
-        seed = time(0);
+        seed = static_cast<unsigned int>(std::time(0));
     RngEngine rng(seed);
     try {
         for (std::size_t i = 0; i < num; ++i) {
@@ -355,7 +355,7 @@ void sampleShrinkOutput(const Generator<T> &g, std::ostream &out,
     if (num == 0)
         num = 20;
     if (seed == 0)
-        seed = time(0);
+        seed = static_cast<unsigned int>(std::time(0));
     RngEngine rng(seed);
     try {
         for (std::size_t i = 0; i < num; ++i) {

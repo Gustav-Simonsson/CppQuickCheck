@@ -39,6 +39,31 @@
 
 namespace cppqc {
 
+// helper class template, since default function parameters not allowed
+// needed to get rid of Visual Studio compiler warnings
+	template<class Integral, bool isSigned = std::numeric_limits<Integral>::is_signed>
+	struct signedAware {
+		static Integral randomNegate(RngEngine &rng, Integral);
+
+	};
+
+	template<class Integral>
+	struct signedAware<Integral, false> {
+		static Integral randomNegate(RngEngine &rng, Integral i) {
+			return i;
+		}
+	};
+
+	template<class Integral>
+	struct signedAware<Integral, true> {
+		static Integral randomNegate(RngEngine &rng, Integral i) {
+			if (boost::uniform_smallint<int>(0, 1)(rng))
+				return -i;
+			else
+				return i;
+		}
+	};
+
 // default generators
 
 template<class Integral>
@@ -64,11 +89,7 @@ Integral arbitrarySizedBoundedIntegral(RngEngine &rng, std::size_t size)
     boost::poisson_distribution<Integral> dist(size == 0 ? 1 : size);
     boost::variate_generator<RngEngine&, boost::uniform_01<> > gen(rng, boost::uniform_01<>());
     Integral r = dist(gen);
-    if (std::numeric_limits<Integral>::is_signed) {
-        if (boost::uniform_smallint<int>(0, 1)(rng))
-            r = -r;
-    }
-    return r;
+	return signedAware<Integral>::randomNegate(rng, r);
 }
 
 template<class Real>
@@ -90,7 +111,7 @@ template<class Integral>
 std::vector<Integral> shrinkIntegral(Integral x)
 {
     std::vector<Integral> ret;
-    if (x < 0 && -x > x)
+    if (x < 0 && -x > x) // TODO: this does not make any sense to me...
         ret.push_back(-x);
     for (Integral n = x; n != 0; n /= 2)
         ret.push_back(x - n);
@@ -110,8 +131,9 @@ std::vector<Real> shrinkReal(Real x)
 
 
 template<class T>
-struct Arbitrary
+class Arbitrary
 {
+public:
     typedef boost::function<T (RngEngine &, std::size_t)> unGenType;
     typedef boost::function<std::vector<T> (T)> shrinkType;
 
