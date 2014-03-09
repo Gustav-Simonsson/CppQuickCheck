@@ -36,6 +36,7 @@
 #include <map>
 #include <algorithm>
 #include <stdexcept>
+#include <ctime>
 
 namespace cppqc {
 
